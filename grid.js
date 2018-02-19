@@ -3,14 +3,20 @@ import Cell from './cell.js';
 export default class Grid{
 	constructor(w,h,row=10,col=10){
 		this.cells = Array(row).fill().map(() => Array(col).fill());
-		const width = w / col;
-		const height = h / row;
+		this.cell_array = [];
 
+		this.cellWidth = w / col;
+		this.cellHeight = h / row;
+
+		this.init(this.cellWidth,this.cellHeight);
+	}
+
+	init(width,height){
 		this.forEachCell((cell,i,j) => {
 			this.cells[i][j] = new Cell(i,j,width,height);
 		});
 		
-		this.cell_array = [];
+		this.cell_array.splice(0);
 		this.forEachCell(cell => {
 			this.cell_array.push(cell);
 		});
@@ -57,6 +63,12 @@ export default class Grid{
 	reveal(cell,shouldReveal=false){
 		if(shouldReveal) cell.reveal();
 		
+		if(cell.isMine){
+			alert('YOU LOSE');
+			grid.init(this.cellWidth,this.cellHeight);
+			return;
+		}
+
 		if(cell.mineAround !== 0) return;
 
 		let neighbors = this.cell_array.filter(other => {
@@ -69,7 +81,7 @@ export default class Grid{
 
 		saveNeighbor.forEach(c => {
 			if(c.isMine || c.mineAround !== 0 || !c.isHidden) return;
-			this.reveal(this.cells[c.row][c.col],shouldReveal);
+			this.reveal(this.cells[c.row][c.col],true);
 		})
 	}
 }

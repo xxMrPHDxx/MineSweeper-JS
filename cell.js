@@ -13,7 +13,7 @@ export default class Cell{
 		this.y = row * h + this.padding;
 
 		this.mineAround = 0;
-		this.isMine = Math.random() < 0.1 ? true : false;
+		this.isMine = Math.random() < 0.09 ? true : false;
 		this.isHidden = true;
 	}
 
@@ -23,7 +23,19 @@ export default class Cell{
 
 	draw(ctx){
 		ctx.fillStyle = color(this.isHidden ? 51 : 255);
+		if(this.isMine && !this.isHidden){
+			ctx.fillStyle = 'red';
+		}
 		ctx.fillRect(this.x,this.y,this.width,this.height);
+
+		// Draw border
+		ctx.strokeStyle = '#000';
+		ctx.strokeRect(
+			this.x - this.padding,
+			this.y - this.padding,
+			this.width + this.padding * 2,
+			this.height + this.padding * 2
+		);
 
 		if(this.isHidden) return;
 
